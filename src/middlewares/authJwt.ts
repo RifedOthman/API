@@ -39,6 +39,8 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+
+
 const authJwt = {
   verifyToken,
 };

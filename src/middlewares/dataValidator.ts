@@ -6,6 +6,8 @@ export const validateCreateUser = [
   body('username').notEmpty().withMessage('Username is required'),
 ];
 
+
+
 export const validateLoginUser = [
   body('email').isEmail().withMessage('Email is required'),
   body('password').notEmpty().withMessage('Password is required'),
@@ -29,4 +31,11 @@ export const validateCreatePost = [
       categories.every((category: string) => typeof category === 'string')
     )
     .withMessage('All categories must be strings'),
+];
+
+
+export const validateUpdateUser = [
+  body('email').optional().isEmail().withMessage('Valid email is required if provided'),
+  body('username').optional().notEmpty().withMessage('Username cannot be empty if provided'),
+  body('role').optional().isIn(['admin', 'member']).withMessage('Role must be either admin or member'),
 ];

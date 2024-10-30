@@ -106,4 +106,64 @@ export class UserController {
       }
     }
   }
+
+
+
+  async updateUser(request: Request, response: Response): Promise<void> {
+    // Validate incoming data
+    const errors = validationResult(request);
+    
+    if (request.body.role !== 'admin') {
+      response.status(400).json({
+        status: 403,
+        message: 'FORBIDDEN YOU DONT HAVE THE PERMISSION TO PERFORM ',
+        data: errors.array(),
+      });
+      return; }
+
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request. Validation errors.',
+        data: errors.array(),
+      });
+      return; // End the function after sending the response
+    }
+  
+    try {
+      const userId = request.params.id; // Get the user ID from the route parameters
+      const updateData = request.body;
+  
+      
+      // Check if the user exists
+      const userDoc = await this.usersService.getUserById(userId);
+      if (userDoc.status !== 200) {
+        response.status(404).json({
+          status: 404,
+          message: 'User not found',
+        });
+        return; // End the function after sending the response
+      }
+  
+      // Update the user data in the database
+      const updateResponse = await this.usersService.updateUser(userId, updateData); // Call the updateUser method in UsersService
+  
+      response.status(updateResponse.status).send({
+        ...updateResponse,
+        userId // Include the user ID in the response
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error, // Optionally log error for debugging
+      });
+    }
+  }
+  
+
+
+
+
+
 }

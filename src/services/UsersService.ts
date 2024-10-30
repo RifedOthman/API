@@ -33,6 +33,9 @@ export class UsersService {
       return {
         status: 201,
         message: 'User created successfully!',
+        data: {
+          id: userRef.id, // Include the newly created user ID
+        },
       };
     } else {
       return {
@@ -126,4 +129,35 @@ export class UsersService {
       }
     };
   }
+
+
+  async updateUser(userId: string, updateData: Partial<User>): Promise<IResBody> {
+    const userRef = this.db.users.doc(userId);
+  
+    // Check if the user exists before trying to update
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) {
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+  
+    // Update the user data
+    await userRef.update({
+      ...updateData,
+      updatedAt: firestoreTimestamp.now(), // Update the timestamp
+    });
+  
+    return {
+      status: 200,
+      message: 'User updated successfully!',
+      data: {
+        id: userId, // Return the updated user ID
+        ...updateData, // Include the updated fields
+      },
+    };
+  }
+  
+  
 }
