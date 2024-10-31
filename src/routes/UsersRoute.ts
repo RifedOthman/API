@@ -19,6 +19,16 @@ export class UsersRoute {
     // admin update user 
     router.put('/users/:id' , validateUpdateUser ,authorize('admin') , this.userController.updateUser.bind(this.userController) );
 
+    // connected user update 
+    router.put('/users/me',authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController));  // Bind the updateUser method
+ 
+    // delete user 
+    router.delete('/users/:id' ,this.userController.DeleteUser.bind(this.userController) );
+
+    //change password  
+    router.patch('/users/password' ,authJwt.verifyToken ,  this.userController.changePassword.bind(this.userController) ) ; 
+
+
     router.get('/users', this.userController.getUsers.bind(this.userController)); // get all users 
 
     router.get('/users/:id', authJwt.verifyToken, this.userController.getUserById.bind(this.userController)); // get user by id 

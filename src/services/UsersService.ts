@@ -82,6 +82,14 @@ export class UsersService {
 
     const usersQuerySnapshot = await this.db.users.where('email', '==', email).get();
 
+
+    usersQuerySnapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      console.log(`Email: ${data.email}, Password: ${data.password}`);
+    });
+
+    
+
     if (usersQuerySnapshot.empty) {
       return {
         status: 401,
@@ -137,6 +145,7 @@ export class UsersService {
     // Check if the user exists before trying to update
     const userDoc = await userRef.get();
     if (!userDoc.exists) {
+
       return {
         status: 404,
         message: 'User not found',
@@ -160,4 +169,96 @@ export class UsersService {
   }
   
   
+
+
+  async updateConnectedUser(userId: string, updateData: Partial<User>): Promise<IResBody> {
+  const userRef = this.db.users.doc(userId);
+  console.log(userRef)
+  console.log("fffffff")
+
+      // Check if the user exists before trying to update
+      const userDoc = await userRef.get();
+      if (!userDoc.exists) {
+        return {
+          status: 404,
+          message: 'User not found',
+        };
+      }
+
+      // Update the user data
+      await userRef.update({
+        ...updateData,
+        updatedAt: firestoreTimestamp.now(), // Update the timestamp
+      });
+
+      return {
+        status: 200,
+        message: 'User updated successfully!',
+        data: {
+          id: userId, // Return the updated user ID
+          ...updateData, // Include the updated fields
+        },
+      };
+    }
+
+
+  async DeleteUser(userId: string): Promise<IResBody> {
+    const userRef = this.db.users.doc(userId);
+  
+    // Check if the user exists before trying to delete
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) {
+
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+  
+    // delete the user
+     userRef.delete() ;
+  
+    return {
+      status: 200,
+      message: 'deleted successfully!',
+    };
+  }
+  
+
+
+  async changePassword(userId: string, newPassword: string): Promise<IResBody> {
+    const userRef = this.db.users.doc(userId);
+  
+    // Check if the user exists
+    const userDoc = await userRef.get();
+    console.log('csqcqscqcqsc')
+
+    console.log(userId)
+    if (!userDoc.exists) {
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+  
+    // Encrypt the new password
+    const encryptedPassword = encryptPassword(newPassword);
+  
+    // Update only the password field
+    await userRef.update({
+      password: encryptedPassword,
+      updatedAt: firestoreTimestamp.now(),
+    });
+  
+    return {
+      status: 200,
+      message: 'Password updated successfully!',
+    };
+  }
+  
+
+
+
+
+
 }
