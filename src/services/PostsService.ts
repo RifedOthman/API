@@ -204,9 +204,9 @@ async getAllPostsByUser(userId: string): Promise<IResBody> {
   
 
   async deletePost(postID: string): Promise<IResBody> {
-    const postRef = this.db.posts.doc();
+    const postRef = this.db.posts.doc(postID);
     
-    postRef.delete ; 
+    postRef.delete() ; 
 
     return {
       status: 200,

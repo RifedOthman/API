@@ -117,4 +117,70 @@ export class CommentsController {
 
 
     
+      async updateComment(request: Request, response: Response): Promise<void> {
+        // Validate incoming data
+        const errors = validationResult(request);
+        
+       /* 
+       HERE ADD CHECK ADMINNNN PLEASE DO NOT FORGETTT 
+        if (request.body.role !== 'admin') {
+          response.status(400).json({
+            status: 403,
+            message: 'FORBIDDEN YOU DONT HAVE THE PERMISSION TO PERFORM ',
+            data: errors.array(),
+          });
+          return; }
+    */
+    
+    
+        try {
+          const commentId = request.params.id; // Get the POSTS ID from the route parameters YEY !! 
+          const updateData = request.body;
+          // Check if the post exists bi id to implement later :) 
+         
+      
+          // Update the user data in the database
+          const updateResponse = await this.commentsService.updateComment(commentId, updateData); // Call the updateUser method in UsersService
+      
+          response.status(updateResponse.status).send({
+            ...updateResponse,
+            commentId // Include the user ID in the response
+          });
+        } catch (error) {
+          response.status(500).json({
+            status: 500,
+            message: 'Internal server error',
+            data: error, // Optionally log error for debugging
+          });
+        }
+      }
+    
+    
+      
+  async deleteComment(request: Request, response: Response): Promise<void> {
+    // Validate incoming data
+    const errors = validationResult(request);
+
+    // to check if the post exists later with find post by id :) 
+    try {
+      const commentId = request.params.id; // Get the user ID from the route parameters
+      
+    
+  
+      // Update the user data in the database
+      const updateResponse = await this.commentsService.deleteComment(commentId); // Call the updateUser method in UsersService
+  
+      response.status(updateResponse.status).send({
+        ...updateResponse,
+        commentId // Include the user ID in the response
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error, // Optionally log error for debugging
+      });
+    }
+  }
+    
 }

@@ -118,4 +118,48 @@ export class CommentsService {
     }
 
 
+
+
+    async updateComment(commentId: string, updateData: Partial<Post>): Promise<IResBody> {
+        const commentRef = this.db.posts.doc(commentId);
+      
+        // Check if the posts exists before trying to update
+        const commentDoc = await commentRef.get();
+        if (!commentDoc.exists) {
+    
+          return {
+            status: 404,
+            message: 'comment not found',
+          };
+        }
+      
+        // Update the post data
+        await commentRef.update({
+          ...updateData,
+          updatedAt: firestoreTimestamp.now(), // Update the timestamp
+        });
+      
+        return {
+          status: 200,
+          message: 'commentupdated successfully!',
+          data: {
+            id: commentId, // Return the updated comment ID
+            ...updateData, // Include the updated fields
+          },
+        };
+      }
+
+    
+  async deleteComment(commentID: string): Promise<IResBody> {
+    const commentRef = this.db.comments.doc(commentID);
+    
+    commentRef.delete() ; 
+
+    return {
+      status: 200,
+      message: 'comment Deleted Successfuly',
+    };
+  }
+
+
 }

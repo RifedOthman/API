@@ -27,9 +27,13 @@ export class CommentsRoute {
         //GET A COMMENT BY ID  
         router.get('/comments/:id',this.commentsController.getCommentById.bind(this.commentsController));
 
+         //Delete comment
+        router.delete('/comments/:id', this.commentsController.deleteComment.bind(this.commentsController));
+
+        // UPDATE comment
+        router.put('/comments/:id',this.commentsController.updateComment.bind(this.commentsController)) ; 
         
         return router ; 
-
 
     }
 
