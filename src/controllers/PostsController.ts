@@ -63,6 +63,72 @@ export class PostsController {
     }
   }
 
+  
+  //GET POST BY ID  
+  async getPostById(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.params.id) {
+        const postResponse = await this.postsService.getPostById(request.params.id);
+
+        response.status(postResponse.status).send({
+          ...postResponse,
+        });
+      } else {
+        response.status(404).json({
+          status: 404,
+          message: 'Post not found'
+        });
+      }
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
+  }
+
+
+  async getAllPostsByUser(request: Request, response: Response): Promise<void> {
+    const { userId } = request.params;
+
+    try {
+        const postsResponse = await this.postsService.getAllPostsByUser(userId);
+
+        response.status(postsResponse.status).send({
+            ...postsResponse,
+        });
+    } catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: 'Internal server error',
+            data: error
+        });
+    }
+}
+
+
+async getPostsByCategory(request: Request, response: Response): Promise<void> {
+  try {
+    // Access the category from the query parameters
+    const category = request.query.category as string;
+
+    // Check if a category is specified
+    if (category) {
+      // Fetch posts filtered by the specified category
+      const postsResponse = await this.postsService.getPostsByCategory(category);
+      response.status(postsResponse.status).send(postsResponse);
+    }
+  } catch (error) {
+    response.status(500).json({
+      status: 500,
+      message: 'Internal server error',
+      data: error
+    });
+  }
+}
+
+
   async getCategories(request: Request, response: Response): Promise<void> {
     try {
       const categoriesResponse = await this.postsService.getCategories();
@@ -79,36 +145,74 @@ export class PostsController {
     }
   }
 
-  async addCommentToPost(request: Request, response: Response): Promise<void> {
+
+
+
+
+  async deletePost(request: Request, response: Response): Promise<void> {
+    // Validate incoming data
     const errors = validationResult(request);
 
-    if (!errors.isEmpty()) {
-      response.status(400).json({
-        status: 400,
-        message: 'Bad request.',
-        data: errors.array(),
+    // to check if the post exists later with find post by id :) 
+    try {
+      const postId = request.params.id; // Get the user ID from the route parameters
+      
+    
+  
+      // Update the user data in the database
+      const updateResponse = await this.postsService.deletePost(postId); // Call the updateUser method in UsersService
+  
+      response.status(updateResponse.status).send({
+        ...updateResponse,
+        postId // Include the user ID in the response
       });
-    } else {
-      try {
-        const { description } = request.body;
-
-        const commentData = {
-          description,
-          createdBy: request.userId
-        };
-
-        const commentIResponse = await this.postsService.addCommentToPost(commentData, request.params.postId);
-
-        response.status(commentIResponse.status).send({
-          ...commentIResponse,
-        });
-      } catch (error) {
-        response.status(500).json({
-          status: 500,
-          message: 'Internal server error',
-          data: error
-        });
-      }
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error, // Optionally log error for debugging
+      });
     }
   }
+
+
+  async updatePost(request: Request, response: Response): Promise<void> {
+    // Validate incoming data
+    const errors = validationResult(request);
+    
+   /* 
+   HERE ADD CHECK ADMINNNN PLEASE DO NOT FORGETTT 
+    if (request.body.role !== 'admin') {
+      response.status(400).json({
+        status: 403,
+        message: 'FORBIDDEN YOU DONT HAVE THE PERMISSION TO PERFORM ',
+        data: errors.array(),
+      });
+      return; }
+*/
+
+
+    try {
+      const postId = request.params.id; // Get the POSTS ID from the route parameters YEY !! 
+      const updateData = request.body;
+      // Check if the post exists bi id to implement later :) 
+     
+  
+      // Update the user data in the database
+      const updateResponse = await this.postsService.updatePost(postId, updateData); // Call the updateUser method in UsersService
+  
+      response.status(updateResponse.status).send({
+        ...updateResponse,
+        postId // Include the user ID in the response
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error, // Optionally log error for debugging
+      });
+    }
+  }
+
+
 }

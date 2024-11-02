@@ -26,15 +26,16 @@ export class UsersRoute {
     router.delete('/users/:id' ,this.userController.DeleteUser.bind(this.userController) );
 
     //change password  
-    router.patch('/users/password' ,authJwt.verifyToken ,  this.userController.changePassword.bind(this.userController) ) ; 
+    router.patch('/users/password' ,authJwt.verifyToken,  this.userController.changePassword.bind(this.userController) ) ; 
 
+    // get all users 
+    router.get('/users', this.userController.getUsers.bind(this.userController)); 
+    
+    // get user by id 
+    router.get('/users/:id', authJwt.verifyToken, this.userController.getUserById.bind(this.userController)); 
 
-    router.get('/users', this.userController.getUsers.bind(this.userController)); // get all users 
-
-    router.get('/users/:id', authJwt.verifyToken, this.userController.getUserById.bind(this.userController)); // get user by id 
-
-    router.post('/auth/login', validateLoginUser, this.userController.login.bind(this.userController)); // login user 
-
+    // login user 
+    router.post('/auth/login', validateLoginUser, this.userController.login.bind(this.userController)); 
 
     
     return router;
