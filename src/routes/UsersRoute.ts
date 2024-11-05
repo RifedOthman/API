@@ -13,17 +13,18 @@ export class UsersRoute {
 
   createRouter(): Router {
     const router = Router();
-   
-    router.post('/users', validateCreateUser, this.userController.createUser.bind(this.userController)); // create user 
+    
+   // create user 
+    router.post('/users', validateCreateUser, this.userController.createUser.bind(this.userController)); 
 
     // admin update user 
     router.put('/users/:id' , validateUpdateUser ,authorize('admin') , this.userController.updateUser.bind(this.userController) );
 
     // connected user update 
-    router.put('/users/me',authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController));  // Bind the updateUser method
+    router.put('/usersconnected',authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController));  // Bind the updateUser method
  
     // delete user 
-    router.delete('/users/:id' ,this.userController.DeleteUser.bind(this.userController) );
+    router.delete('/users/:id' ,authorize('admin'), this.userController.DeleteUser.bind(this.userController) );
 
     //change password  
     router.patch('/users/password' ,authJwt.verifyToken,  this.userController.changePassword.bind(this.userController) ) ; 

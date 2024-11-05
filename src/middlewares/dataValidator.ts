@@ -37,5 +37,5 @@ export const validateCreatePost = [
 export const validateUpdateUser = [
   body('email').optional().isEmail().withMessage('Valid email is required if provided'),
   body('username').optional().notEmpty().withMessage('Username cannot be empty if provided'),
-  body('role').optional().isIn(['admin', 'member']).withMessage('Role must be either admin or member'),
+  body('role').optional().isIn(['admin']).withMessage('Role must be either admin or member'),
 ];

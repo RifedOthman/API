@@ -4,7 +4,6 @@ import { validationResult } from 'express-validator';
 
 export class PostsController {
   private postsService: PostsService;
-
   constructor(postsService: PostsService) {
     this.postsService = postsService;
   }
@@ -62,7 +61,6 @@ export class PostsController {
       });
     }
   }
-
   
   //GET POST BY ID  
   async getPostById(request: Request, response: Response): Promise<void> {
@@ -88,7 +86,6 @@ export class PostsController {
     }
   }
 
-
   async getAllPostsByUser(request: Request, response: Response): Promise<void> {
     const { userId } = request.params;
 
@@ -107,8 +104,7 @@ export class PostsController {
     }
 }
 
-
-async getPostsByCategory(request: Request, response: Response): Promise<void> {
+  async getPostsByCategory(request: Request, response: Response): Promise<void> {
   try {
     // Access the category from the query parameters
     const category = request.query.category as string;
@@ -128,7 +124,6 @@ async getPostsByCategory(request: Request, response: Response): Promise<void> {
   }
 }
 
-
   async getCategories(request: Request, response: Response): Promise<void> {
     try {
       const categoriesResponse = await this.postsService.getCategories();
@@ -144,10 +139,6 @@ async getPostsByCategory(request: Request, response: Response): Promise<void> {
       });
     }
   }
-
-
-
-
 
   async deletePost(request: Request, response: Response): Promise<void> {
     // Validate incoming data
@@ -175,23 +166,10 @@ async getPostsByCategory(request: Request, response: Response): Promise<void> {
     }
   }
 
-
   async updatePost(request: Request, response: Response): Promise<void> {
     // Validate incoming data
     const errors = validationResult(request);
-    
-   /* 
-   HERE ADD CHECK ADMINNNN PLEASE DO NOT FORGETTT 
-    if (request.body.role !== 'admin') {
-      response.status(400).json({
-        status: 403,
-        message: 'FORBIDDEN YOU DONT HAVE THE PERMISSION TO PERFORM ',
-        data: errors.array(),
-      });
-      return; }
-*/
-
-
+  
     try {
       const postId = request.params.id; // Get the POSTS ID from the route parameters YEY !! 
       const updateData = request.body;
@@ -210,6 +188,24 @@ async getPostsByCategory(request: Request, response: Response): Promise<void> {
         status: 500,
         message: 'Internal server error',
         data: error, // Optionally log error for debugging
+      });
+    }
+  }
+
+  async updownvote(request: Request, response: Response): Promise<void> {
+    const postId = request.params.id; // Get the post ID from the route parameters
+    const userId = request.userId; // Assuming you have middleware to set the userId
+
+    try {
+      
+      const voteResponse = await this.postsService.updownvotePost(postId, userId as string);
+
+      response.status(voteResponse.status).send(voteResponse);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
       });
     }
   }

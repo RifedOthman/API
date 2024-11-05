@@ -145,7 +145,6 @@ export class UserController {
         return; // End the function after sending the response
       }
   
-      // Update the user data in the database
       const updateResponse = await this.usersService.updateUser(userId, updateData); // Call the updateUser method in UsersService
   
       response.status(updateResponse.status).send({

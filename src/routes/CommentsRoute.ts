@@ -33,6 +33,9 @@ export class CommentsRoute {
         // UPDATE comment
         router.put('/comments/:id',this.commentsController.updateComment.bind(this.commentsController)) ; 
         
+        //UPVOTE,DOOWNVOTE Comment    
+       // router.patch('/posts/:id/vote',authJwt.verifyToken, this.commentsController.updownvote.bind(this.commentsController));
+
         return router ; 
 
     }

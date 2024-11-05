@@ -11,10 +11,8 @@ interface DecodeToken extends JwtPayload {
 
 const authorize = (requiredRole: string) => {
 
-
-
   return (req: Request, res: Response, next: NextFunction) => {
-    const userRole = 'admin'; // Get the role from the request object set by JWT middleware
+    const userRole = 'admin' ; // Get the role from the request object set by JWT middleware
 
     if (userRole !== requiredRole) {
         console.log('User role from request:', req.userRole);

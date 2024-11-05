@@ -214,6 +214,61 @@ async getAllPostsByUser(userId: string): Promise<IResBody> {
     };
   }
 
+  async updownvotePost(postId: string, userId: string): Promise<IResBody> {
+    const postRef = this.db.posts.doc(postId);
+    const postDoc = await postRef.get();
+
+    // Check if the post document exists
+    if (!postDoc.exists) {
+      return {
+        status: 404,
+        message: 'Post not found!',
+        data: null,
+      };
+    }
+
+    const postData = postDoc.data() as Post;
+
+    // Initialize usersVote and voteCount if they are undefined
+    if (!postData.usersVote) postData.usersVote = [];
+    if (postData.voteCount === undefined) postData.voteCount = 0;
+
+    // Check if the user has already voted on this post
+    const userHasVoted = postData.usersVote.includes(userId);
+
+    if (userHasVoted) {
+      // User is removing their vote
+      postData.usersVote = postData.usersVote.filter(id => id !== userId);
+      postData.voteCount -= 1; // Decrement vote count
+    } else {
+      // User is adding their vote
+      postData.usersVote.push(userId);
+      postData.voteCount += 1; // Increment vote count
+    }
+
+    // Update the post document in Firestore
+    await postRef.update({
+      usersVote: postData.usersVote,
+      voteCount: postData.voteCount,
+      updatedAt: firestoreTimestamp.now(), // Ensure to update the timestamp
+    });
+
+    return {
+      status: 200,
+      message: 'Vote processed successfully!',
+      data: {
+        id: postId,
+        title: postData.title,
+        description: postData.description,
+        categories: postData.categories,
+        createdBy: postData.createdBy,
+        createdAt: postData.createdAt instanceof Timestamp ? postData.createdAt.toDate() : postData.createdAt,
+        updatedAt: firestoreTimestamp.now(),
+        voteCount: postData.voteCount,
+        usersVote: postData.usersVote,
+      },
+    };
+  }
 
 
 

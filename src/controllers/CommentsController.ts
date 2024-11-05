@@ -154,8 +154,7 @@ export class CommentsController {
           });
         }
       }
-    
-    
+     
       
   async deleteComment(request: Request, response: Response): Promise<void> {
     // Validate incoming data
@@ -182,5 +181,26 @@ export class CommentsController {
       });
     }
   }
+
+
+/*
+  async updownvote(request: Request, response: Response): Promise<void> {
+    const postId = request.params.id; // Get the post ID from the route parameters
+    const userId = request.userId; // Assuming you have middleware to set the userId
+
+    try {
+      
+      const voteResponse = await this.commentsService.updownvotePost(postId, userId as string);
+
+      response.status(voteResponse.status).send(voteResponse);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+*/
     
 }
