@@ -161,44 +161,42 @@ export class CommentsService {
     };
   }
 
-
-/*
-   async updownvotePost(postId: string, userId: string): Promise<IResBody> {
-    const postRef = this.db.posts.doc(postId);
-    const postDoc = await postRef.get();
+  async updownvoteComment(commentsId: string, userId: string): Promise<IResBody> {
+    const commentRef = this.db.posts.doc(commentsId);
+    const commentDoc = await commentRef.get();
 
     // Check if the post document exists
-    if (!postDoc.exists) {
+    if (!commentDoc.exists) {
       return {
         status: 404,
-        message: 'Post not found!',
+        message: 'comment not found!',
         data: null,
       };
     }
 
-    const postData = postDoc.data() as Post;
+    const commentData = commentDoc.data() as Post;
 
     // Initialize usersVote and voteCount if they are undefined
-    if (!postData.usersVote) postData.usersVote = [];
-    if (postData.voteCount === undefined) postData.voteCount = 0;
+    if (!commentData.usersVote) commentData.usersVote = [];
+    if (commentData.voteCount === undefined) commentData.voteCount = 0;
 
     // Check if the user has already voted on this post
-    const userHasVoted = postData.usersVote.includes(userId);
+    const userHasVoted = commentData.usersVote.includes(userId);
 
     if (userHasVoted) {
       // User is removing their vote
-      postData.usersVote = postData.usersVote.filter(id => id !== userId);
-      postData.voteCount -= 1; // Decrement vote count
+      commentData.usersVote = commentData.usersVote.filter(id => id !== userId);
+      commentData.voteCount -= 1; // Decrement vote count
     } else {
       // User is adding their vote
-      postData.usersVote.push(userId);
-      postData.voteCount += 1; // Increment vote count
+      commentData.usersVote.push(userId);
+      commentData.voteCount += 1; // Increment vote count
     }
 
-    // Update the post document in Firestore
-    await postRef.update({
-      usersVote: postData.usersVote,
-      voteCount: postData.voteCount,
+    // Update the comment document in Firestore
+    await commentRef.update({
+      usersVote: commentData.usersVote,
+      voteCount: commentData.voteCount,
       updatedAt: firestoreTimestamp.now(), // Ensure to update the timestamp
     });
 
@@ -206,18 +204,17 @@ export class CommentsService {
       status: 200,
       message: 'Vote processed successfully!',
       data: {
-        id: postId,
-        title: postData.title,
-        description: postData.description,
-        categories: postData.categories,
-        createdBy: postData.createdBy,
-        createdAt: postData.createdAt instanceof Timestamp ? postData.createdAt.toDate() : postData.createdAt,
+        id: commentsId,
+        title: commentData.title,
+        description: commentData.description,
+        categories: commentData.categories,
+        createdBy: commentData.createdBy,
+        createdAt: commentData.createdAt instanceof Timestamp ? commentData.createdAt.toDate() : commentData.createdAt,
         updatedAt: firestoreTimestamp.now(),
-        voteCount: postData.voteCount,
-        usersVote: postData.usersVote,
+        voteCount: commentData.voteCount,
+        usersVote: commentData.usersVote,
       },
     };
   }
-*/
 
 }

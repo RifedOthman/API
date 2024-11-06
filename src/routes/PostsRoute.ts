@@ -18,7 +18,7 @@ export class PostsRoute {
     router.post('/posts', authJwt.verifyToken, validateCreatePost, this.postsController.createPost.bind(this.postsController));
 
     //GET ALL POSTS 
-    router.get('/posts', this.postsController.getPosts.bind(this.postsController));
+    router.get('/allposts', this.postsController.getPosts.bind(this.postsController));
 
     //GET POST BY ID 
     router.get('/posts/:id', this.postsController.getPostById.bind(this.postsController));

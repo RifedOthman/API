@@ -5,6 +5,7 @@ import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
 import { Timestamp } from 'firebase/firestore';
 import { categories } from '../constants/categories';
+import { formatPostData } from '../utils/formatData';
 
 export class PostsService {
   private db: FirestoreCollections;
@@ -153,24 +154,32 @@ async getAllPostsByUser(userId: string): Promise<IResBody> {
 
 
   async getPostsByCategory(category: string): Promise<IResBody> {
-    const posts: Post[] = [];
+    
     const postsQuerySnapshot = await this.db.posts.where('categories', 'array-contains', category).get();
-  
+
+    if (postsQuerySnapshot.empty) {
+      return {
+        status: 404,
+        message: 'No posts found for this category',
+      };
+    }
+
+    const posts: Post[] = [];
+
     for (const doc of postsQuerySnapshot.docs) {
+      const formattedPost = formatPostData(doc.data());
+    
       posts.push({
         id: doc.id,
-        ...doc.data(),
-        createdAt: (doc.data()?.createdAt as Timestamp)?.toDate(),
-        updatedAt: (doc.data()?.updatedAt as Timestamp)?.toDate(),
+        ...formattedPost,
       });
     }
-  
     return {
       status: 200,
       message: 'Posts retrieved successfully!',
-      data: posts
-    };
-  }
+      data: posts,
+    };
+  }
   
 
   async updatePost(postId: string, updateData: Partial<Post>): Promise<IResBody> {
