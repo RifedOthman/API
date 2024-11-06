@@ -48,6 +48,7 @@ npm run create-admin
  ![alt text](<update user informations.png>)
 
  # update connected user informations (1 - saisie de token): 
+ # j'ai changé la route /users/me par /usersconnected pour eviter la confusion avec la route de update user 
 ![alt text](<updateconnecteduser 1 .png>)
  # update connected user informations ( 2 - saisie de nouveau informations de user ): 
 ![alt text](<update user 2 .png>)
