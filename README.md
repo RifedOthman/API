@@ -33,7 +33,7 @@ npm run create-admin
 # Usersroutes  
 # ---------------- #
 # Create USER : 
-Route : POST
+Route : POST  
 Method : /users
 ![alt text](<create user .png>)
 
