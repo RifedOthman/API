@@ -171,13 +171,13 @@ export class CommentsController {
   
       response.status(updateResponse.status).send({
         ...updateResponse,
-        commentId // Include the user ID in the response
+        commentId 
       });
     } catch (error) {
       response.status(500).json({
         status: 500,
         message: 'Internal server error',
-        data: error, // Optionally log error for debugging
+        data: error, 
       });
     }
   }
@@ -199,6 +199,27 @@ export class CommentsController {
       });
     }
   }
+
+
+
+  async getTopComments(request: Request, response: Response): Promise<void> {
+    const { postId } = request.params;
+
+    try {
+        const commentsResponse = await this.commentsService.getAllCommentsPostWithVote(postId);
+
+        response.status(commentsResponse.status).send({
+            ...commentsResponse,
+        });
+    } catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: 'Internal server error',
+            data: error,
+        });
+    }
+} 
+
 
     
 }

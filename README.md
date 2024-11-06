@@ -104,5 +104,7 @@ npm run create-admin
  # Comment-Upvote/Downvote
 ![alt text](COMMENTUPVOTE.png)
 
+ # TOP COMMENTS IN A POST 
+![alt text](<TOPCOMMENT POST .png>)
 
 

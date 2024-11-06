@@ -217,4 +217,41 @@ export class CommentsService {
     };
   }
 
+
+
+  async getAllCommentsPostWithVote(postId: string): Promise<IResBody> {
+    const comments: Comment[] = [];
+    
+    // Query to retrieve all comments for the post without sorting
+    const commentsSnapshot = await this.db.comments.where('postId', '==', postId).get();
+
+    if (commentsSnapshot.empty) {
+        return {
+            status: 404,
+            message: 'No comments found for this post.',
+            data: [],
+        };
+    }
+
+    // Convert documents to Comment objects and sort them by voteCount in descending order
+    commentsSnapshot.forEach(doc => {
+        comments.push({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: (doc.data()?.createdAt as Timestamp)?.toDate(),
+            updatedAt: (doc.data()?.updatedAt as Timestamp)?.toDate(),
+        });
+    });
+
+    // Sort comments by voteCount (or other criteria) in code
+    comments.sort((a, b) => (b.voteCount ?? 0) - (a.voteCount ?? 0));
+
+    return {
+        status: 200,
+        message: 'Comments retrieved and sorted by vote count successfully!',
+        data: comments,
+    };
+}
+
+
 }
