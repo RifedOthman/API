@@ -39,7 +39,7 @@ export class PostsRoute {
     router.get('/categories', this.postsController.getCategories.bind(this.postsController));
 
     //UPVOTE,DOOWNVOTE POST   
-    router.patch('/posts/:id/vote',authJwt.verifyToken , this.postsController.updownvote.bind(this.postsController));
+    router.post('/posts/:id/vote',authJwt.verifyToken , this.postsController.updownvote.bind(this.postsController));
 
     return router;
   }
